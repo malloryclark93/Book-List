@@ -1,3 +1,6 @@
+
+
+
 class Book {
   constructor(title, author, isbn){
     this.title = title;
@@ -70,6 +73,51 @@ class UI {
 
 }
 
+// Local storage Class
+class Store {
+  static getBooks(){
+    let books;
+    if(localStorage.getItem('books') === null){
+      books = [];
+    } else { 
+      books = JSON.parse(localStorage.getItem('books'));
+    }
+    return books;
+
+  }
+ 
+  static displayBooks(){
+    const books = Store.getBooks();
+    
+    // loop through each book
+    books.forEach(function(book){
+      const ui = new UI; 
+
+      // Add book to UI 
+      ui.addBookToList(book);
+
+    });
+
+  }
+
+  static addBook(book){
+    const books = Store.getBooks(book);
+    
+    books.push(book);
+
+    localStorage.setItem('books', JSON.stringify(books));
+
+  }
+
+  static removeBook(){
+
+  }
+}
+
+// DOM load event
+document.addEventListener('DOMContentLoaded', Store.displayBooks);
+
+
 // Event Listener for Add Book 
 document.getElementById('book-form').addEventListener('submit', function(e){
   // console.log('test');
@@ -98,6 +146,9 @@ document.getElementById('book-form').addEventListener('submit', function(e){
       // add book to list
       ui.addBookToList(book);
 
+      // Add to Local Storage 
+      Store.addBook(book);
+
       // Show success
       ui.showAlert('Book Added', 'success'); // class of success
 
@@ -122,3 +173,4 @@ document.getElementById('book-list').addEventListener('click', function(e){
   
   e.preventDefault();
 });
+

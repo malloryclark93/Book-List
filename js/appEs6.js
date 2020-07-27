@@ -18,7 +18,7 @@ class UI {
     // console.log(list);
     // Create table row element
     const row = document.createElement('tr');
-    console.log(row);
+    // console.log(row);
     // Insert cols
     row.innerHTML = `
     <td>${book.title}</td>
@@ -49,19 +49,17 @@ class UI {
     document.querySelector('.alert').remove();
   }, 2000);
 
-
-
   }
 
 
   deleteBook(target){
-    UI.prototype.deleteBook = function(target){
+    // UI.prototype.deleteBook = function(target){
       if(target.className === 'delete'){
         target.parentElement.parentElement.remove();
       }
     }
 
-  }
+
 
   clearFields(){
     document.getElementById('title').value = '';
@@ -109,8 +107,17 @@ class Store {
 
   }
 
-  static removeBook(){
+  static removeBook(isbn){
+    // console.log(isbn);
+    const books = Store.getBooks();
 
+    books.forEach(function(book, index){
+      if(book.isbn === isbn){
+        books.splice(index, 1);
+
+      }
+    });
+      localStorage.setItem('books', JSON.stringify(books));
   }
 }
 
@@ -136,7 +143,7 @@ document.getElementById('book-form').addEventListener('submit', function(e){
   const ui = new UI();
     // console.log(ui); // the method addBookToList is now in the prototype
 
-    console.log(ui);
+    // console.log(ui);
  
     // Validate
     if(title === '' || author === '' || isbn === ''){
@@ -168,9 +175,15 @@ document.getElementById('book-list').addEventListener('click', function(e){
 
     ui.deleteBook(e.target);
 
+    // Remove from local storage
+    Store.removeBook(e.target.parentElement.previousElementSibling.textContent); 
+   
+
+
     // Show message
     ui.showAlert('Book Removed', 'success');
   
   e.preventDefault();
 });
+
 
